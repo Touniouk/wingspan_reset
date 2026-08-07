@@ -1,0 +1,13 @@
+[
+    {
+      "card": ["Killdeer", "Franklin's Gull"],
+      "food": ["Dark-Eyed Junco", "Cedar Waxwing", "Common Nightingale", "Ruby-Throated Hummingbird", "Anna's Hummingbird", 
+        "Eastern Kingbird", "Eastern Phoebe", "American Crow"]
+      "birds": ["Eurasian Tree Sparrow", "Red-Legged Partridge"],
+      "food": ["invertebrate", "seed", "fruit"]
+    }
+    {
+      "birds": [],
+      "food": []
+    }
+  ]
