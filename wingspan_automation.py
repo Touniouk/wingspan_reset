@@ -767,11 +767,11 @@ if __name__ == "__main__":
     The script will take screenshots and perform OCR to detect the End-of-Round goal or specific birds in the starting hand. It will reload the game until the desired conditions are met.
     Press Ctrl+C or enable Caps Lock to stop the automation at any time.
     """
-    test_bird_and_eor_coordinates()
+    # test_bird_and_eor_coordinates()
     # test_bird_and_eor_coordinates_with_ocr()
     # create_coordinate_grid()
-    # logger.color_info("Starting in 3 seconds... Focus the Wingspan window!")
-    # time.sleep(3)
-    # reload_until_threshold_met(automa=True)
+    logger.color_info("Starting in 3 seconds... Focus the Wingspan window!")
+    time.sleep(3)
+    reload_until_threshold_met(automa=True)
     # perform_ocr_local("screenshots/temp_region_eor2_20250930_211337.png")
     # annotate_screenshot(Image.open("screenshots/full_window_20250930_194519.png"), "20250930_194519")
