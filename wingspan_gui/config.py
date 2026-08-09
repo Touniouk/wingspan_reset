@@ -12,6 +12,7 @@ CONFIG_DIR = Path(platformdirs.user_config_dir(APP_NAME))
 DEFAULT_CONFIG_PATH = CONFIG_DIR / "config.json"
 
 LOG_DIR = Path(platformdirs.user_log_dir(APP_NAME))
+LOG_DIR.mkdir(parents=True, exist_ok=True)
 DEFAULT_LOG_PATH = LOG_DIR / "wingspan_automation.log"
 
 # Kept relative to the project directory rather than user config, since they're

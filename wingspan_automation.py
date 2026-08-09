@@ -48,10 +48,15 @@ birdPoints = {
     "Wilson's Snipe": 2,
     "Kelp Gull": 1,
     "Brolga": 1,
-    "Dorian's Jackdaw": 1
+    "Dorian's Jackdaw": 1,
+    "Nightingale": 1,
+    "Green Pheasant": 1,
+    "Gray Catbird": 1,
+    "Northern Mockingbird": 1,
+    "Bluethroat": 1,
 }
-NO_GOAL_POINTS = 1  # Point value awarded when the "NO GOAL" End-of-Round goal is detected
-POINT_THRESHOLD = 4 # Hand is kept once the combined bird + EOR points reach this value
+NO_GOAL_POINTS = 100  # Point value awarded when the "NO GOAL" End-of-Round goal is detected
+POINT_THRESHOLD = 104 # Hand is kept once the combined bird + EOR points reach this value
 
 ############ PROBABLY DON'T CHANGE THESE VALUES UNLESS YOU KNOW WHAT YOU'RE DOING ############
 

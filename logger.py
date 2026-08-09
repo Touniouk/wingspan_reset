@@ -20,31 +20,36 @@ class Logger:
         'RESET': '\033[0m'
     }
     
-    def __init__(self, level=DEBUG, log_file=None, enable_color_in_file=False):
+    def __init__(self, level=DEBUG, log_file=None, enable_color_in_file=False, on_log=None):
         """
         Initialize logger.
-        
+
         Args:
             level (int): Minimum log level to display
             log_file (str): Optional path to log file
             enable_color_in_file (bool): Whether to use color codes in file
+            on_log (callable): Optional callback(level_name: str, message: str) invoked
+                                on every logged line that passes the level filter, in
+                                addition to the normal terminal/file output. Useful for
+                                streaming logs into a UI. Called on whatever thread logs.
         """
         self.current_level = level
         self.log_file = None
         self.enable_color_in_file = enable_color_in_file
-        
+        self.on_log = on_log
+
         if log_file:
             try:
                 self.log_file = open(log_file, 'a')
             except Exception as e:
                 print(f"⚠️ Failed to open log file: {log_file} - {e}")
-    
+
     def _log(self, level, level_name, message, use_color=False):
         """Internal log function"""
         if self.current_level <= level:
             timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
             line = f"{timestamp} [{level_name}] {message}"
-            
+
             # Terminal output
             if use_color:
                 color_code = self.COLORS.get(level_name, '')
@@ -52,7 +57,7 @@ class Logger:
                 print(f"{color_code}{line}{reset_code}")
             else:
                 print(line)
-            
+
             # File output
             if self.log_file:
                 if self.enable_color_in_file and use_color:
@@ -62,6 +67,9 @@ class Logger:
                 else:
                     self.log_file.write(f"{line}\n")
                 self.log_file.flush()
+
+            if self.on_log:
+                self.on_log(level_name, message)
     
     # Plain log functions
     def silly(self, msg):
