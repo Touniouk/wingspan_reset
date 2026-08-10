@@ -10,7 +10,7 @@ import pyautogui  # type: ignore
 from pynput import keyboard  # type: ignore
 
 CLICKS_PER_SECOND = 2
-DEFAULT_MAX_CLICKS = 142
+DEFAULT_MAX_CLICKS = 200
 
 clicking_enabled = False
 exit_requested = False
