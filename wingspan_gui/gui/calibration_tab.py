@@ -7,12 +7,13 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import ttk, messagebox
 
-from PIL import ImageTk
+from PIL import Image, ImageTk
 
 from wingspan_gui import platform_io
 from wingspan_gui.calibration_math import (
     canvas_point_to_fraction,
     canvas_rect_to_fraction,
+    compute_display_scale,
     fraction_point_to_canvas,
     fraction_rect_to_canvas,
 )
@@ -20,10 +21,13 @@ from wingspan_gui.config import DEFAULT_CONFIG_PATH, SCREENSHOT_DIR
 from wingspan_gui.ocr import crop_region_and_check_ocr
 
 # Fixed size of the visible canvas viewport - the captured screenshot renders at
-# native resolution (for calibration precision) and may be larger than this, in
-# which case the scrollbars let you pan around it instead of it being shrunk to fit.
+# the chosen zoom level and may be larger than this, in which case the
+# scrollbars let you pan around it instead of it being shrunk to fit.
 VIEWPORT_W = 1000
 VIEWPORT_H = 650
+
+ZOOM_PRESETS = ["Fit to window", "25%", "50%", "75%", "100%", "150%", "200%"]
+DEFAULT_ZOOM = "Fit to window"
 
 REGION_KINDS = ('starting_bird', 'tray_bird', 'eor')
 KIND_LABELS = {'starting_bird': 'bird', 'tray_bird': 'tray', 'eor': 'eor', 'button': 'button'}
@@ -80,6 +84,15 @@ class CalibrationTab(ttk.Frame):
         ttk.Button(left, text="Capture Screenshot", command=self._start_capture_countdown).pack(fill="x", pady=2)
         self.countdown_label = ttk.Label(left, text="")
         self.countdown_label.pack(fill="x")
+
+        zoom_row = ttk.Frame(left)
+        zoom_row.pack(fill="x", pady=(6, 2))
+        ttk.Label(zoom_row, text="Zoom:").pack(side="left")
+        self.zoom_var = tk.StringVar(value=DEFAULT_ZOOM)
+        zoom_combo = ttk.Combobox(zoom_row, textvariable=self.zoom_var, values=ZOOM_PRESETS,
+                                   state="readonly", width=14)
+        zoom_combo.pack(side="left", padx=4)
+        zoom_combo.bind("<<ComboboxSelected>>", self._on_zoom_changed)
 
         ttk.Label(left, text="Select an item to edit:").pack(anchor="w", pady=(10, 0))
         self.item_listbox = tk.Listbox(left, width=28, height=16, exportselection=False)
@@ -155,14 +168,33 @@ class CalibrationTab(ttk.Frame):
         w = self.cfg.window
         self.full_img = platform_io.take_screenshot(w.x_offset, w.y_offset, w.width, w.height)
         self.img_w, self.img_h = self.full_img.size
-        # Render at native resolution for calibration precision; the fixed-size
-        # viewport + scrollbars handle images larger than what's visible at once.
-        self.display_scale = 1.0
-        self.tk_image = ImageTk.PhotoImage(self.full_img)
+        self._render_at_current_zoom()
+
+    def _zoom_to_scale(self, zoom_str: str) -> float:
+        if zoom_str == "Fit to window":
+            return compute_display_scale(self.img_w, self.img_h, VIEWPORT_W, VIEWPORT_H)
+        return float(zoom_str.rstrip('%')) / 100.0
+
+    def _on_zoom_changed(self, event=None):
+        if self.full_img is None:
+            return
+        self._render_at_current_zoom()
+
+    def _render_at_current_zoom(self):
+        """Re-render the already-captured full_img at the currently selected zoom
+        level. full_img itself always stays at native resolution - only the
+        displayed copy is scaled, so OCR/Test always operates on full-quality
+        pixels regardless of zoom."""
+        self.display_scale = self._zoom_to_scale(self.zoom_var.get())
+
+        display_w = max(1, int(self.img_w * self.display_scale))
+        display_h = max(1, int(self.img_h * self.display_scale))
+        display_img = self.full_img.resize((display_w, display_h), Image.LANCZOS)
+        self.tk_image = ImageTk.PhotoImage(display_img)
 
         self.canvas.delete("all")
         self.canvas.create_image(0, 0, image=self.tk_image, anchor="nw", tags="base_image")
-        self.canvas.configure(scrollregion=(0, 0, self.img_w, self.img_h))
+        self.canvas.configure(scrollregion=(0, 0, display_w, display_h))
         self._redraw_overlays()
 
     # --- overlay drawing -------------------------------------------------------

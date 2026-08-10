@@ -56,7 +56,7 @@ birdPoints = {
     "Bluethroat": 1,
 }
 NO_GOAL_POINTS = 100  # Point value awarded when the "NO GOAL" End-of-Round goal is detected
-POINT_THRESHOLD = 104 # Hand is kept once the combined bird + EOR points reach this value
+POINT_THRESHOLD = 103 # Hand is kept once the combined bird + EOR points reach this value
 
 ############ PROBABLY DON'T CHANGE THESE VALUES UNLESS YOU KNOW WHAT YOU'RE DOING ############
 
