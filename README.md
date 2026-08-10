@@ -11,12 +11,14 @@ either keeping the hand for you to play, or pausing with a sound alert.
   will not run on Windows/Linux as-is)
 - Python 3
 - [Tesseract OCR](https://github.com/tesseract-ocr/tesseract): `brew install tesseract`
-- Python packages: `pyautogui`, `pillow`, `pynput` (only needed for `scripts/autoclicker.py`)
+  (used via the `tesseract` CLI, not a Python package)
+- Python packages: see `requirements.txt` (`pynput` is only needed for
+  `scripts/autoclicker.py`)
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install pyautogui pillow pynput
+pip install -r requirements.txt
 ```
 
 ## Project layout

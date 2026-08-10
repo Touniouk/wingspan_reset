@@ -1,0 +1,4 @@
+pillow>=11.3
+pyautogui>=0.9.54
+pynput>=1.8.2
+platformdirs>=4.11

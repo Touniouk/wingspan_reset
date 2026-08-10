@@ -29,8 +29,12 @@ def perform_ocr_local(filename: str, logger) -> str:
         normalized = ' '.join(result.stdout.split()).upper()
         logger.color_debug(f"OCR result: '{normalized}'")
         return normalized
+    except FileNotFoundError:
+        logger.color_error("OCR failed: 'tesseract' executable not found on PATH")
+        return "Nothing"
     except subprocess.CalledProcessError as e:
-        logger.color_error(f"OCR failed: {e}")
+        stderr = e.stderr.strip() if e.stderr else "(no stderr)"
+        logger.color_error(f"OCR failed: tesseract exited {e.returncode}: {stderr}")
         return "Nothing"
 
 
