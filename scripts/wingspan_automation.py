@@ -405,8 +405,8 @@ def check_score_and_reload(counter, tryAgain=True, continue_on_match=True, autom
     full_img = Image.open(full_window_file)
 
     # Check the EOR regions for "NO GOAL"
-    eor_1_result = crop_region_and_check_ocr(full_img, timestamp, endOfRoundGoals[0], False)
-    eor_2_result = crop_region_and_check_ocr(full_img, timestamp, endOfRoundGoals[1], False)
+    eor_1_result = crop_region_and_check_ocr(full_img, timestamp, endOfRoundGoals[0])
+    eor_2_result = crop_region_and_check_ocr(full_img, timestamp, endOfRoundGoals[1])
     has_no_goal = 'NO GOAL' in eor_1_result or 'NO GOAL' in eor_2_result
     eor_points = NO_GOAL_POINTS if has_no_goal else 0
     logger.color_info(f"EOR is '{eor_1_result}' (NO GOAL: {has_no_goal}, {eor_points} points)")

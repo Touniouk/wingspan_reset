@@ -96,8 +96,8 @@ def check_score_and_reload(cfg, stop_event: threading.Event, logger, counter: in
         full_img.save(full_window_file)
         logger.color_debug(f"Captured full window screenshot: {full_window_file}")
 
-        eor_1_result = crop_region_and_check_ocr(full_img, timestamp, cfg.eor_goals[0], logger, delete_temp_file=False)
-        eor_2_result = crop_region_and_check_ocr(full_img, timestamp, cfg.eor_goals[1], logger, delete_temp_file=False)
+        eor_1_result = crop_region_and_check_ocr(full_img, timestamp, cfg.eor_goals[0], logger)
+        eor_2_result = crop_region_and_check_ocr(full_img, timestamp, cfg.eor_goals[1], logger)
         has_no_goal = 'NO GOAL' in eor_1_result or 'NO GOAL' in eor_2_result
         eor_points = cfg.no_goal_points if has_no_goal else 0
         logger.color_info(f"EOR is '{eor_1_result}' (NO GOAL: {has_no_goal}, {eor_points} points)")
