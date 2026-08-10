@@ -11,22 +11,35 @@ either keeping the hand for you to play, or pausing with a sound alert.
   will not run on Windows/Linux as-is)
 - Python 3
 - [Tesseract OCR](https://github.com/tesseract-ocr/tesseract): `brew install tesseract`
-- Python packages: `pyautogui`, `pillow`
+- Python packages: `pyautogui`, `pillow`, `pynput` (only needed for `scripts/autoclicker.py`)
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install pyautogui pillow
+pip install pyautogui pillow pynput
 ```
+
+## Project layout
+
+- `scripts/wingspan_automation.py` — the original standalone automation script
+  (see below for setup/usage)
+- `scripts/autoclicker.py` — small Tkinter autoclicker tuned for Wingspan's
+  repeated-click screens (default 142 clicks at 2/sec); run directly with
+  `python3 scripts/autoclicker.py`
+- `wingspan_gui/`, `main.py`, `gui_main.py` — a Tkinter GUI port of the same
+  automation logic (`python3 gui_main.py` to launch)
+- `logger.py`, `birds.json` — shared by both the script and the GUI, kept at
+  the repo root
 
 ## Files you need
 
-- `wingspan_automation.py` — the script itself
+- `scripts/wingspan_automation.py` — the script itself
 - `logger.py` — small colored logger used for console/file output
 - `birds.json` — Wingspan bird database, used to fuzzy-match OCR'd bird names to
   real bird common names
 
-All three must be in the same directory.
+`logger.py` and `birds.json` must stay at the repo root; the script must be run
+from the repo root (see below) so it can find them.
 
 ## macOS permissions
 
@@ -45,11 +58,11 @@ Everything is measured as a fraction of the Wingspan window, so it needs to be
 calibrated once for your screen resolution and window position.
 
 1. Position the Wingspan window in the top-left area of your screen and don't move it.
-2. In `wingspan_automation.py`, set `WINDOW_X_OFFSET` / `WINDOW_Y_OFFSET` to the
+2. In `scripts/wingspan_automation.py`, set `WINDOW_X_OFFSET` / `WINDOW_Y_OFFSET` to the
    window's top-left corner on screen, and `WINDOW_W` / `WINDOW_H` to its width/height.
 3. Use the built-in calibration helpers (uncomment the one you want in the
    `if __name__ == "__main__":` block at the bottom of the file, then run
-   `python3 wingspan_automation.py`):
+   `python3 scripts/wingspan_automation.py` from the repo root):
    - `create_coordinate_grid()` — takes a screenshot with a pixel-coordinate grid
      overlay so you can read off `x, y` values by eye.
    - `test_bird_and_eor_coordinates()` — draws colored boxes over the configured
@@ -106,8 +119,11 @@ Then:
 
 ```bash
 source venv/bin/activate
-python3 wingspan_automation.py
+python3 scripts/wingspan_automation.py
 ```
+
+Run this from the repo root — the script looks for `birds.json` and writes to
+`screenshots/` relative to the current directory.
 
 Focus the Wingspan window during the 3-second startup countdown. **Press Ctrl+C or
 turn on Caps Lock at any time to stop the automation immediately.**

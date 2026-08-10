@@ -9,7 +9,10 @@ import pyautogui # type: ignore
 import time
 import subprocess
 import os
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from logger import Logger # type: ignore
 from PIL import Image, ImageDraw # type: ignore
 import json
